@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Company Box Type Card - Database Schema Visualization</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+      }
+
+      .container {
+        max-width: 1200px;
+        width: 100%;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 3rem;
+        color: white;
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .header p {
+        color: #94a3b8;
+        font-size: 1.1rem;
+      }
+
+      .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+      }
+
+      .company-card {
+        background: rgba(30, 41, 59, 0.5);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(139, 92, 246, 0.3);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .company-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #8b5cf6 0%, #3b82f6 100%);
+      }
+
+      .company-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(139, 92, 246, 0.6);
+        box-shadow: 0 25px 70px rgba(139, 92, 246, 0.2);
+      }
+
+      .card-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+      }
+
+      .company-info {
+        flex: 1;
+      }
+
+      .company-name {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .verified-badge {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+
+      .verified-badge::before {
+        content: "✓";
+        font-weight: bold;
+      }
+
+      .location {
+        color: #94a3b8;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .location::before {
+        content: "📍";
+      }
+
+      .company-description {
+        color: #cbd5e1;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+      }
+
+      .card-stats {
+        display: flex;
+        gap: 1rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(148, 163, 184, 0.2);
+      }
+
+      .stat {
+        flex: 1;
+        text-align: center;
+        padding: 1rem;
+        background: rgba(139, 92, 246, 0.1);
+        border-radius: 12px;
+        border: 1px solid rgba(139, 92, 246, 0.2);
+      }
+
+      .stat-value {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #8b5cf6;
+        margin-bottom: 0.25rem;
+      }
+
+      .stat-label {
+        font-size: 0.8rem;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .schema-table {
+        background: rgba(30, 41, 59, 0.5);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(139, 92, 246, 0.3);
+        border-radius: 20px;
+        padding: 2rem;
+        overflow-x: auto;
+      }
+
+      .schema-table h2 {
+        color: white;
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .schema-table h2::before {
+        content: "🗄️";
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+      }
+
+      th {
+        color: #8b5cf6;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+      }
+
+      td {
+        color: #cbd5e1;
+        font-size: 0.95rem;
+      }
+
+      .data-type {
+        color: #3b82f6;
+        font-weight: 600;
+        font-family: "Courier New", monospace;
+      }
+
+      .constraint {
+        color: #10b981;
+        font-weight: 600;
+        font-family: "Courier New", monospace;
+      }
+
+      .field-mapping {
+        background: rgba(59, 130, 246, 0.1);
+        border-left: 3px solid #3b82f6;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        margin: 0.5rem 0;
+      }
+
+      .field-name {
+        color: #60a5fa;
+        font-weight: 600;
+        font-family: "Courier New", monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Company Box Type Card</h1>
+        <p>Database Schema Visualization - Companies Table</p>
+      </div>
+
+      <div class="cards-grid">
+        <!-- Example Card 1 -->
+        <div class="company-card">
+          <div class="card-header">
+            <div class="company-info">
+              <div class="company-name">
+                TechCorp Solutions
+                <span class="verified-badge">Verified</span>
+              </div>
+              <div class="location">San Francisco, CA</div>
+            </div>
+          </div>
+          <div class="company-description">
+            Leading innovator in AI-driven enterprise solutions. We're building
+            the future of intelligent automation and machine learning platforms
+            for Fortune 500 companies.
+          </div>
+          <div class="card-stats">
+            <div class="stat">
+              <div class="stat-value">12</div>
+              <div class="stat-label">Active Jobs</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value">ID: 1</div>
+              <div class="stat-label">Company ID</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Example Card 2 -->
+        <div class="company-card">
+          <div class="card-header">
+            <div class="company-info">
+              <div class="company-name">DataFlow Analytics</div>
+              <div class="location">New York, NY</div>
+            </div>
+          </div>
+          <div class="company-description">
+            Pioneering data analytics and business intelligence solutions. We
+            help organizations transform raw data into actionable insights
+            through cutting-edge visualization tools.
+          </div>
+          <div class="card-stats">
+            <div class="stat">
+              <div class="stat-value">8</div>
+              <div class="stat-label">Active Jobs</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value">ID: 2</div>
+              <div class="stat-label">Company ID</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Example Card 3 -->
+        <div class="company-card">
+          <div class="card-header">
+            <div class="company-info">
+              <div class="company-name">
+                CloudNine Systems
+                <span class="verified-badge">Verified</span>
+              </div>
+              <div class="location">Austin, TX</div>
+            </div>
+          </div>
+          <div class="company-description">
+            Cloud infrastructure specialists delivering scalable, secure, and
+            reliable solutions. Our platform powers millions of applications
+            worldwide with 99.99% uptime.
+          </div>
+          <div class="card-stats">
+            <div class="stat">
+              <div class="stat-value">15</div>
+              <div class="stat-label">Active Jobs</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value">ID: 3</div>
+              <div class="stat-label">Company ID</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="schema-table">
+        <h2>Database Schema - Companies Table</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Column Name</th>
+              <th>Data Type</th>
+              <th>Constraints</th>
+              <th>Description</th>
+              <th>UI Mapping</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="field-name">id</td>
+              <td class="data-type">INTEGER</td>
+              <td class="constraint">PK, Auto-Increment</td>
+              <td>Unique identifier for each company</td>
+              <td>
+                <div class="field-mapping">
+                  <strong>Card Footer:</strong> "ID: 1" stat display
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="field-name">user_id</td>
+              <td class="data-type">INTEGER</td>
+              <td class="constraint">FK (users.id)</td>
+              <td>References the primary user account of the company</td>
+              <td>
+                <div class="field-mapping">
+                  <strong>Backend:</strong> Links to user authentication
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="field-name">company_name</td>
+              <td class="data-type">TEXT</td>
+              <td class="constraint">NOT NULL</td>
+              <td>Legal name of the company</td>
+              <td>
+                <div class="field-mapping">
+                  <strong>Card Header:</strong> Large bold title text
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="field-name">location</td>
+              <td class="data-type">TEXT</td>
+              <td class="constraint">—</td>
+              <td>Company headquarters or hiring location</td>
+              <td>
+                <div class="field-mapping">
+                  <strong>Card Header:</strong> Location badge with pin icon
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="field-name">is_verified</td>
+              <td class="data-type">INTEGER</td>
+              <td class="constraint">DEFAULT 0</td>
+              <td>Verification status (1 = Verified, 0 = Unverified)</td>
+              <td>
+                <div class="field-mapping">
+                  <strong>Card Header:</strong> "Verified" badge (shown if
+                  is_verified = 1)
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>
